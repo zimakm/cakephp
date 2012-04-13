@@ -459,6 +459,9 @@ class PaginatorHelper extends AppHelper {
 			if (!empty($disabledTitle) && $disabledTitle !== true) {
 				$title = $disabledTitle;
 			}
+			if(empty($disabledOptions['tag'])) {
+				$disabledOptions['tag'] = $_defaults['tag'];
+			}
 			$options = array_merge($_defaults, (array)$disabledOptions);
 		} elseif (!$this->{$check}($options['model'])) {
 			return null;
@@ -471,7 +474,11 @@ class PaginatorHelper extends AppHelper {
 		$url = array_merge(array('page' => $paging['page'] + ($which == 'Prev' ? $step * -1 : $step)), $url);
 
 		if ($this->{$check}($model)) {
-			return $this->Html->tag($tag, $this->link($title, $url, array_merge($options, compact('escape'))), compact('class'));
+			if(empty($tag)) {
+				return $this->link($title, $url, array_merge($options, compact('escape', 'class')));
+			} else {
+				return $this->Html->tag($tag, $this->link($title, $url, array_merge($options, compact('escape'))), compact('class'));
+			}
 		} else {
 			unset($options['rel']);
 			return $this->Html->tag($tag, $title, array_merge($options, compact('escape', 'class')));
